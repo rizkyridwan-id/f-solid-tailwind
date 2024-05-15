@@ -1,14 +1,14 @@
-import { Header, Sidebar, Content, Card } from "./components";
+import { Suspense } from "solid-js";
+import { Content } from "./components";
+import { LoadingScreen, ToastNotification } from "./utils";
 
 function App() {
   return (
-    <div>
-      <Header />
-      <Sidebar />
-      <Content>
-        <Card header="Data Master">Hai</Card>
-      </Content>
-    </div>
+    <Suspense fallback={<LoadingScreen />}>
+      <Content />
+      <ToastNotification />
+      <LoadingScreen />
+    </Suspense>
   );
 }
 

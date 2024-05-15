@@ -1,4 +1,26 @@
+import { Show, For, createSignal } from "solid-js";
+import { removeItem, setLoading } from "../../../utils";
+import { useNavigate } from "@solidjs/router";
+
 const Header = () => {
+  const navigate = useNavigate();
+
+  const [isDropdownOpen, setDropdownOpen] = createSignal(false);
+
+  const handleDropdownToggle = () => {
+    setDropdownOpen(!isDropdownOpen());
+  };
+
+  const handleLogout = () => {
+    setLoading({ screen: true });
+    removeItem("userdata");
+    setTimeout(() => {
+      navigate("/");
+      setLoading({ screen: false });
+    }, 3000);
+  };
+
+  const handleProfile = () => {};
   return (
     <header class="border-b-1 sticky top-0 z-40 border-b border-wuiSlate-200 bg-white/90 backdrop-blur-sm">
       <div class="relative mx-auto max-w-full px-6 lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[96rem]">
@@ -12,7 +34,6 @@ const Header = () => {
             aria-label="WindUI logo"
             aria-current="page"
             class="flex items-center gap-2 py-3 text-lg whitespace-nowrap focus:outline-none lg:flex-1"
-            href="javascript:void(0)"
           >
             <svg
               width="300"
@@ -46,74 +67,47 @@ const Header = () => {
               <span
                 aria-hidden="true"
                 class="absolute block h-0.5 w-9/12 -translate-y-2 transform rounded-full bg-slate-900 transition-all duration-300"
-              ></span>
+              />
               <span
                 aria-hidden="true"
                 class="absolute block h-0.5 w-6 transform rounded-full bg-slate-900 transition duration-300"
-              ></span>
+              />
               <span
                 aria-hidden="true"
                 class="absolute block h-0.5 w-1/2 origin-top-left translate-y-2 transform rounded-full bg-slate-900 transition-all duration-300"
-              ></span>
+              />
             </div>
           </button>
-          <ul
-            role="menubar"
-            aria-label="Select page"
-            class="invisible absolute top-0 left-0 z-[-1] ml-auto h-screen w-full justify-center overflow-hidden overflow-y-auto overscroll-contain bg-white/90 px-8 pb-12 pt-28 font-medium opacity-0 transition-[opacity,visibility] duration-300 lg:visible lg:relative lg:top-0 lg:z-0 lg:flex lg:h-full lg:w-auto lg:items-stretch lg:overflow-visible lg:bg-white/0 lg:px-0 lg:py-0 lg:pt-0 lg:opacity-100"
-          >
-            <li role="none" class="flex items-stretch">
-              <a
-                role="menuitem"
-                aria-haspopup="false"
-                class="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600 focus:outline-none focus-visible:outline-none lg:px-8"
-                href="javascript:void(0)"
-              >
-                {" "}
-                <span>Blog</span>
-              </a>
-            </li>
-            <li role="none" class="flex items-stretch">
-              <a
-                role="menuitem"
-                aria-current="page"
-                aria-haspopup="false"
-                class="flex items-center gap-2 py-4 transition-colors duration-300 text-emerald-500 hover:text-emerald-600 focus:text-emerald-600 focus:outline-none focus-visible:outline-none lg:px-8"
-                href="javascript:void(0)"
-              >
-                {" "}
-                <span>Planning</span>{" "}
-              </a>
-            </li>
-            <li role="none" class="flex items-stretch">
-              <a
-                role="menuitem"
-                aria-haspopup="false"
-                class="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600 focus:outline-none focus-visible:outline-none lg:px-8"
-                href="javascript:void(0)"
-              >
-                {" "}
-                <span>About me</span>{" "}
-              </a>
-            </li>
-          </ul>
-          <div class="flex items-center px-6 ml-auto lg:ml-0 lg:p-0">
-            <a
-              href="#"
-              class="relative inline-flex items-center justify-center w-10 h-10 text-white rounded-full"
-            >
+
+          <div class="flex items-center px-6 ml-auto lg:ml-3 lg:p-0 ">
+            <div class="relative inline-flex items-center justify-center w-10 h-10 text-white rounded-full">
+              <p>Admin</p>
               <img
                 src="https://i.pravatar.cc/40?img=35"
                 alt="user name"
                 title="user name"
                 width="40"
                 height="40"
-                class="max-w-full rounded-full"
+                class="max-w-full rounded-full cursor-pointer"
+                onClick={handleDropdownToggle}
               />
-              <span class="absolute bottom-0 right-0 inline-flex items-center justify-center gap-1 p-1 text-sm text-white bg-pink-500 border-2 border-white rounded-full">
-                <span class="sr-only"> 7 new emails </span>
-              </span>
-            </a>
+              <Show when={isDropdownOpen()}>
+                <div class="absolute right-0 mt-32 w-48 bg-white border border-gray-300 rounded-md shadow-lg">
+                  <For each={["Profile", "Logout"]}>
+                    {(option) => (
+                      <button
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        onClick={
+                          option === "Profile" ? handleProfile : handleLogout
+                        }
+                      >
+                        {option}
+                      </button>
+                    )}
+                  </For>
+                </div>
+              </Show>
+            </div>
           </div>
         </nav>
       </div>
